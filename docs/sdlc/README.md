@@ -5,7 +5,7 @@
 <!-- sdlc:auto:start overview -->
 split wise calculator
 
-**Documentation version:** v1
+**Documentation version:** v2
 <!-- sdlc:auto:end overview -->
 
 ## Contents
@@ -14,14 +14,14 @@ split wise calculator
 | Document | State |
 |---|---|
 | [Requirements](requirements/README.md) | v1 approved |
-| [Architecture](architecture/README.md) | 0 entries |
+| [Architecture](architecture/README.md) | 18 entries |
 | [Development](development/README.md) | 0 entries |
 | [Testing](testing/README.md) | 0 entries |
 | [Deployment](deployment/README.md) | 0 entries |
 | [Maintenance](maintenance/README.md) | 0 entries |
-| [Data model](architecture/data-model.md) | not generated yet |
-| [API (OpenAPI)](architecture/api/openapi.yaml) | not generated yet |
-| [Decisions (ADRs)](architecture/adr/README.md) | 0 decisions |
+| [Data model](architecture/data-model.md) | generated |
+| [API (OpenAPI)](architecture/api/openapi.yaml) | generated |
+| [Decisions (ADRs)](architecture/adr/README.md) | 4 decisions |
 | [Sprint plan](development/sprint-plan.md) | not generated yet |
 | [Developer guide](development/developer-guide.md) | not generated yet |
 | [API reference](development/api-reference.md) | 0 routes |
@@ -31,7 +31,7 @@ split wise calculator
 | [Runbook](deployment/runbook.md) | not deployed yet |
 | [Release notes](deployment/release-notes.md) | 0 releases |
 | [Traceability matrix](traceability-matrix.md) | 17 requirements |
-| [Changelog](CHANGELOG.md) | 1 version |
+| [Changelog](CHANGELOG.md) | 2 versions |
 <!-- sdlc:auto:end contents -->
 
 ## Open gaps
@@ -51,4 +51,10 @@ split wise calculator
 - Reminder trigger schedule/frequency (e.g. daily, weekly) is not specified anywhere in the input.
 - Notification history retention/length is not specified.
 - The actual minimum password requirements (length, character classes, etc.) are not defined in the input.
+
+### Architecture
+
+- Input does not map individual requirement ids (US-001..US-017) to specific architecture elements, so most architecture entries below are traceable to the architecture spec itself but not to specific user stories -- recommend requirements-to-architecture mapping be confirmed by a human reviewer.
+- No requirement id in the known list is explicitly linked to this path in the input.
+- No specific requirement id cited in the input for this decision.
 <!-- sdlc:auto:end open-gaps -->

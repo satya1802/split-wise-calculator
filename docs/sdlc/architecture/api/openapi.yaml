@@ -2,6 +2,615 @@
 openapi: 3.1.0
 info:
   title: split wise calculator
-  version: architecture-v0
+  version: architecture-v2
   description: Designed API from the approved architecture (not extracted from code).
-paths: {}
+paths:
+  /auth/login:
+    post:
+      summary: Authenticate a verified user and issue a session token; blocks unverified
+        accounts.
+      description: Authenticate a verified user and issue a session token; blocks
+        unverified accounts.
+      operationId: post_auth_login
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: '{email, password}'
+      responses:
+        '200':
+          description: '{access_token}'
+  /auth/logout:
+    post:
+      summary: End the current session.
+      description: End the current session.
+      operationId: post_auth_logout
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: '-'
+      responses:
+        '200':
+          description: '{status}'
+      security:
+      - bearerAuth: []
+  /auth/register:
+    post:
+      summary: Register an unverified account and enqueue a verification email.
+      description: Register an unverified account and enqueue a verification email.
+      operationId: post_auth_register
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: '{email, password}'
+      responses:
+        '200':
+          description: '{user_id, status}'
+  /auth/resend-verification:
+    post:
+      summary: Resend the verification email for an unverified account.
+      description: Resend the verification email for an unverified account.
+      operationId: post_auth_resend_verification
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: '{email}'
+      responses:
+        '200':
+          description: '{status}'
+  /auth/verify:
+    get:
+      summary: Verify email via token and activate the account.
+      description: Verify email via token and activate the account.
+      operationId: get_auth_verify
+      parameters: []
+      responses:
+        '200':
+          description: '{verified: true}'
+  /expenses/{id}:
+    patch:
+      summary: Edit own expense (or any, if admin); recomputes balances.
+      description: Edit own expense (or any, if admin); recomputes balances.
+      operationId: patch_expenses_id
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: '{description?, amount?, split_method?, shares?}'
+      responses:
+        '200':
+          description: '{expense, balances}'
+      security:
+      - bearerAuth: []
+    delete:
+      summary: Delete own expense (or any, if admin); recomputes balances.
+      description: Delete own expense (or any, if admin); recomputes balances.
+      operationId: delete_expenses_id
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: '{status}'
+      security:
+      - bearerAuth: []
+  /groups:
+    get:
+      summary: List groups the caller is a member of.
+      description: List groups the caller is a member of.
+      operationId: get_groups
+      parameters: []
+      responses:
+        '200':
+          description: '[{group}]'
+      security:
+      - bearerAuth: []
+    post:
+      summary: Create a named group with the caller as admin and first member.
+      description: Create a named group with the caller as admin and first member.
+      operationId: post_groups
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: '{name, default_currency?}'
+      responses:
+        '200':
+          description: '{group}'
+      security:
+      - bearerAuth: []
+  /groups/{id}:
+    patch:
+      summary: Edit group name or currency (admin).
+      description: Edit group name or currency (admin).
+      operationId: patch_groups_id
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: '{name?, default_currency?}'
+      responses:
+        '200':
+          description: '{group}'
+      security:
+      - bearerAuth: []
+  /groups/{id}/balances:
+    get:
+      summary: Per-member net balances in the group currency.
+      description: Per-member net balances in the group currency.
+      operationId: get_groups_id_balances
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: '[{user_id, net_balance}]'
+      security:
+      - bearerAuth: []
+  /groups/{id}/expenses:
+    get:
+      summary: List group expenses (members only).
+      description: List group expenses (members only).
+      operationId: get_groups_id_expenses
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: '[{expense}]'
+      security:
+      - bearerAuth: []
+    post:
+      summary: Log an expense with payer, involved members and split method; recomputes
+        balances and enqueues notifications.
+      description: Log an expense with payer, involved members and split method; recomputes
+        balances and enqueues notifications.
+      operationId: post_groups_id_expenses
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: '{description, amount, date, payer_id, split_method, shares[]}'
+      responses:
+        '200':
+          description: '{expense, balances}'
+      security:
+      - bearerAuth: []
+  /groups/{id}/invitations:
+    post:
+      summary: Invite by email or generate a shareable invite link (admin).
+      description: Invite by email or generate a shareable invite link (admin).
+      operationId: post_groups_id_invitations
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: '{email?}'
+      responses:
+        '200':
+          description: '{invite_token, link}'
+      security:
+      - bearerAuth: []
+  /groups/{id}/members:
+    get:
+      summary: List current group members (members only).
+      description: List current group members (members only).
+      operationId: get_groups_id_members
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: '[{member}]'
+      security:
+      - bearerAuth: []
+  /groups/{id}/members/{user_id}:
+    delete:
+      summary: Remove a member (admin only).
+      description: Remove a member (admin only).
+      operationId: delete_groups_id_members_user_id
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: '{status}'
+      security:
+      - bearerAuth: []
+  /groups/{id}/settlement-suggestions:
+    get:
+      summary: Minimized who-owes-whom transfers or nothing to settle.
+      description: Minimized who-owes-whom transfers or nothing to settle.
+      operationId: get_groups_id_settlement_suggestions
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: '[{payer_id, payee_id, amount}]'
+      security:
+      - bearerAuth: []
+  /groups/{id}/settlements:
+    post:
+      summary: Record a manual repayment (payer, payee, positive amount) and reduce
+        balances.
+      description: Record a manual repayment (payer, payee, positive amount) and reduce
+        balances.
+      operationId: post_groups_id_settlements
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: '{payer_id, payee_id, amount}'
+      responses:
+        '200':
+          description: '{settlement, balances}'
+      security:
+      - bearerAuth: []
+  /invitations/{token}/accept:
+    post:
+      summary: Accept an invite and join the group; rejects revoked or invalid invites.
+      description: Accept an invite and join the group; rejects revoked or invalid
+        invites.
+      operationId: post_invitations_token_accept
+      parameters:
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: '-'
+      responses:
+        '200':
+          description: '{group_member}'
+      security:
+      - bearerAuth: []
+  /notifications:
+    get:
+      summary: List the caller's in-app notifications.
+      description: List the caller's in-app notifications.
+      operationId: get_notifications
+      parameters: []
+      responses:
+        '200':
+          description: '[{notification}]'
+      security:
+      - bearerAuth: []
+  /notifications/{id}/read:
+    post:
+      summary: Mark a notification as read.
+      description: Mark a notification as read.
+      operationId: post_notifications_id_read
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: '-'
+      responses:
+        '200':
+          description: '{status}'
+      security:
+      - bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    users:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+        password_hash:
+          type: string
+        is_verified:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - id
+      - email
+      - password_hash
+      - is_verified
+      - created_at
+    email_verifications:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        token:
+          type: string
+        expires_at:
+          type: string
+          format: date-time
+        used_at:
+          type: string
+          format: date-time
+      required:
+      - id
+      - user_id
+      - token
+      - expires_at
+    groups:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        default_currency:
+          type: string
+        creator_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - id
+      - name
+      - default_currency
+      - creator_id
+      - created_at
+    group_members:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        group_id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        role:
+          type: string
+        joined_at:
+          type: string
+          format: date-time
+      required:
+      - id
+      - group_id
+      - user_id
+      - role
+      - joined_at
+    invitations:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        group_id:
+          type: string
+          format: uuid
+        email:
+          type: string
+        token:
+          type: string
+        status:
+          type: string
+        created_by:
+          type: string
+          format: uuid
+        expires_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - id
+      - group_id
+      - token
+      - status
+      - created_by
+      - created_at
+    expenses:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        group_id:
+          type: string
+          format: uuid
+        description:
+          type: string
+        amount:
+          type: number
+        expense_date:
+          type: string
+          format: date
+        payer_id:
+          type: string
+          format: uuid
+        created_by:
+          type: string
+          format: uuid
+        split_method:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - id
+      - group_id
+      - description
+      - amount
+      - expense_date
+      - payer_id
+      - created_by
+      - split_method
+      - created_at
+    expense_splits:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        expense_id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        share_amount:
+          type: number
+      required:
+      - id
+      - expense_id
+      - user_id
+      - share_amount
+    settlements:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        group_id:
+          type: string
+          format: uuid
+        payer_id:
+          type: string
+          format: uuid
+        payee_id:
+          type: string
+          format: uuid
+        amount:
+          type: number
+        created_by:
+          type: string
+          format: uuid
+        paid_at:
+          type: string
+          format: date-time
+      required:
+      - id
+      - group_id
+      - payer_id
+      - payee_id
+      - amount
+      - created_by
+      - paid_at
+    notifications:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        group_id:
+          type: string
+          format: uuid
+        type:
+          type: string
+        message:
+          type: string
+        is_read:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - id
+      - user_id
+      - type
+      - message
+      - is_read
+      - created_at
