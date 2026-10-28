@@ -5,7 +5,7 @@
 <!-- sdlc:auto:start overview -->
 split wise calculator
 
-**Documentation version:** v2
+**Documentation version:** v3
 <!-- sdlc:auto:end overview -->
 
 ## Contents
@@ -15,14 +15,14 @@ split wise calculator
 |---|---|
 | [Requirements](requirements/README.md) | v1 approved |
 | [Architecture](architecture/README.md) | 18 entries |
-| [Development](development/README.md) | 0 entries |
+| [Development](development/README.md) | 36 entries |
 | [Testing](testing/README.md) | 0 entries |
 | [Deployment](deployment/README.md) | 0 entries |
 | [Maintenance](maintenance/README.md) | 0 entries |
 | [Data model](architecture/data-model.md) | generated |
 | [API (OpenAPI)](architecture/api/openapi.yaml) | generated |
 | [Decisions (ADRs)](architecture/adr/README.md) | 4 decisions |
-| [Sprint plan](development/sprint-plan.md) | not generated yet |
+| [Sprint plan](development/sprint-plan.md) | 5 sprints |
 | [Developer guide](development/developer-guide.md) | generated |
 | [API reference](development/api-reference.md) | 1 route |
 | [Test report](testing/test-report.md) | not run yet |
@@ -31,7 +31,7 @@ split wise calculator
 | [Runbook](deployment/runbook.md) | not deployed yet |
 | [Release notes](deployment/release-notes.md) | 0 releases |
 | [Traceability matrix](traceability-matrix.md) | 17 requirements |
-| [Changelog](CHANGELOG.md) | 2 versions |
+| [Changelog](CHANGELOG.md) | 3 versions |
 <!-- sdlc:auto:end contents -->
 
 ## Open gaps
@@ -57,4 +57,18 @@ split wise calculator
 - Input does not map individual requirement ids (US-001..US-017) to specific architecture elements, so most architecture entries below are traceable to the architecture spec itself but not to specific user stories -- recommend requirements-to-architecture mapping be confirmed by a human reviewer.
 - No requirement id in the known list is explicitly linked to this path in the input.
 - No specific requirement id cited in the input for this decision.
+
+### Development
+
+- Input provided is the approved backlog/sprint plan only; no ticket status, code commits, PRs, or completion evidence was supplied, so actual development progress cannot be documented yet.
+- Story-to-sprint assignment is inferred from matching the sprint goal wording to story titles; the plan input does not explicitly tag item IDs to sprint numbers.
+- No execution status (in progress/done) reported for this sprint.
+- Sprint assignment inferred from goal text, not an explicit item-to-sprint mapping in the input.
+- No execution status reported for this sprint.
+- Assigned backlog totals only 8 of the 20-point capacity for this sprint; no rationale for the unused capacity was provided.
+- Epic-level points and role are unspecified (None/unassigned) in the input.
+- No implementation or completion status reported for this ticket.
+- No implementation or completion status reported for this ticket or its sub-tasks.
+- No point estimate or completion status provided for this task.
+- No actual test results are available yet; this only records the planned test-suite task.
 <!-- sdlc:auto:end open-gaps -->
